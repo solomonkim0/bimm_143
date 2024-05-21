@@ -1,2 +1,2 @@
 # bimm_143
-My class work for BIMM143 S24
+My class work for BIMM143 S24 at UCSD. 
