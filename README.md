@@ -13,7 +13,7 @@ My class work for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) 
 - **Class 9** [visualization of high dimensional datasets](https://github.com/solomonkim0/bimm_143/blob/main/class9/class9.pdf)
 - **Class 10** [Structural Bioinformatics]()
 - **Class 11** [Genome informatics](https://github.com/solomonkim0/bimm_143/blob/main/Class11/week11hw.pdf)
-- **Class 13** [Transcriptomics and the analysis of RNA-Seq data](https://github.com/solomonkim0/bimm_143/blob/main/Class 13/Class13lab.pdf)
+- **Class 13** [Transcriptomics and the analysis of RNA-Seq data](https://github.com/solomonkim0/bimm_143/blob/main/Class13/Class13lab.pdf)
 - **Class 14** 
 - **Class 18** [Mini Project: Investigating Pertussis Resurgence]()
   
