@@ -1,0 +1,231 @@
+---
+title: "Class14: RNA Seq Mini project"
+author: "Solomon"
+format: pdf
+toc: TRUE
+---
+Here we run through a complete RNASeq analysis from counts to pathways and biological insight...
+
+
+## Data Import
+
+```{r}
+library(DESeq2)
+
+metaFile <- "GSE37704_metadata.csv"
+countFile <- "GSE37704_featurecounts.csv"
+
+# Import metadata and take a peak
+colData = read.csv(metaFile, row.names=1)
+head(colData)
+
+```
+
+```{r}
+countData = read.csv(countFile, row.names=1)
+head(countData)
+```
+
+```{r}
+countData1 <- countData[,-1]
+head(countData1)
+```
+```{r}
+to.keep.inds <- rowSums(countData1) > 0 
+countData1 <- countData1[to.keep.inds,]
+head(countData1)
+```
+
+
+## Setup for DESeq 
+
+```{r}
+library(DESeq2)
+
+dds = DESeqDataSetFromMatrix(countData=countData1,
+                             colData=colData,
+                             design=~condition)
+
+dds
+```
+
+## Running DESeq 
+
+```{r}
+dds <- DESeq(dds)
+```
+```{r}
+res = results(dds, contrast=c("condition", "hoxa1_kd", "control_sirna"))
+res
+
+```
+
+## Add gene annotation (gene names etc.)
+
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+
+
+```{r}
+columns(org.Hs.eg.db)
+
+res$symbol <- mapIds(org.Hs.eg.db,
+                    keys= row.names(res), 
+                    keytype="ENSEMBL",
+                    column="SYMBOL",
+                    multiVals="first")
+
+res$entrez <- mapIds(org.Hs.eg.db,
+                    keys=row.names(res),
+                    keytype="ENSEMBL",
+                    column="ENTREZID",
+                    multiVals="first")
+
+res$name <- mapIds(org.Hs.eg.db,
+                    keys=row.names(res),
+                    keytype="ENSEMBL",
+                    column="GENENAME",
+                    multiVals="first")
+
+head(res, 10)
+```
+
+## Results visualization 
+
+
+```{r}
+library(ggplot2)
+data <- as.data.frame(res)
+ggplot(data) + aes(log2FoldChange, -log(padj)) + geom_point() 
+```
+
+```{r}
+
+
+library(EnhancedVolcano)
+
+x <- as.data.frame(res)
+
+EnhancedVolcano(x,
+    lab = x$entrez,
+    x = 'log2FoldChange',
+    y = 'pvalue')
+```
+
+
+## Save our results 
+```{r}
+write.csv(res, file="myresults.csv")
+```
+
+
+## Pathway analysis (KEGG, GO, Reactome)
+
+
+```{r}
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+
+# Focus on signaling and metabolic pathways only
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
+
+```
+
+### KEGG
+
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+
+
+```{r}
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+```
+
+
+```{r}
+attributes(keggres)
+```
+
+```{r}
+# Look at the first few down (less) pathways
+head(keggres$less)
+```
+
+
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+```
+
+
+
+```{r}
+# A different PDF based output of the same data
+pathview(gene.data=foldchanges, pathway.id="hsa04110", kegg.native=FALSE)
+```
+
+```{r}
+## Focus on top 5 upregulated pathways here for demo purposes only
+keggrespathways <- rownames(keggres$greater)[1:5]
+
+# Extract the 8 character long IDs part of each string
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id=keggresids, species="hsa")
+```
+
+![](hsa04110.pathview.png)
+![](hsa04630.pathview.png)
+![](hsa04640.pathview.png)
+
+### GO
+
+```{r}
+data(go.sets.hs)
+data(go.subs.hs)
+
+# Focus on Biological Process subset of GO
+gobpsets = go.sets.hs[go.subs.hs$BP]
+
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+
+lapply(gobpres, head)
+```
+
+### Reactome 
+
+We can use reactome as an R packae or we can use the online version which has some new interactive cisualization features. Let's try the web version... 
+
+It wants us to upload a file with the genes of interest (o.e. those with significant differences for our experiment
+
+
+```{r}
+sig_genes <- res[res$padj <= 0.05 & !is.na(res$padj), "symbol"]
+print(paste("Total number of significant genes:", length(sig_genes)))
+```
+```{r}
+write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+```
+
+![](R-HSA-156842.png)
+
+
+
+
+
