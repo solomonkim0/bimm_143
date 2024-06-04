@@ -1,0 +1,41 @@
+---
+author: "Solomon Kim"
+title: "Class_11_HW"
+format: pdf
+---
+
+>Q13: Read this file into R and determine the sample size for each genotype and their corresponding median expression levels for each of these genotypes. 
+
+```{r}
+expr <- read.table("rs8067378_ENSG00000172057.6.txt")
+head(expr)
+```
+```{r}
+#sample size
+nrow(expr)
+```
+```{r}
+#size of each genotype
+table(expr$geno)
+```
+
+```{r}
+#median
+summary(expr$exp)
+```
+
+
+>Q14: Generate a boxplot with a box per genotype, what could you infer from the relative expression value between A/A and G/G displayed in this plot? Does the SNP effect the expression of ORMDL3?
+
+```{r}
+library(ggplot2)
+
+ggplot(expr)+ aes(x=geno, y= exp, col=geno, fill=geno)+ geom_boxplot(notch=TRUE)
+
+summary(expr$exp)
+```
+
+#The relative expression of G/G is lower compared to A/A. Therefore, the SNP for G/G will result in less expression. 
+
+
+
