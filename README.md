@@ -10,7 +10,7 @@ My class work for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) 
 - **Class 7** [Machine learning 1](https://github.com/solomonkim0/bimm_143/blob/main/Class07/class7.pdf)
 
 - **Class 8** [Cancer Cell Analysis Mini-Project]()
-- **Class 9** [visualization of high dimensional datasets]()
+- **Class 9** [visualization of high dimensional datasets](https://github.dev/solomonkim0/bimm_143/blob/main/class9/class9.pdf)
 - **Class 10** [Structural Bioinformatics]()
 - **Class 11** [Genome informatics]()
   
