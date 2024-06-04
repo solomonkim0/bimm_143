@@ -11,7 +11,7 @@ My class work for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) 
   
 - **Class 9** [visualization of high dimensional datasets](https://github.com/solomonkim0/bimm_143/blob/main/class9/class9.pdf)
   
-- **Class 10** [Structural Bioinformatics](https://github.com/solomonkim0/bimm_143/blob/main/class10/class10.pdf)
+- **Class 10** [Structural Bioinformatics](https://github.com/solomonkim0/bimm_143/blob/main/Class10/class10.pdf)
   
 - **Class 11** [Genome informatics](https://github.com/solomonkim0/bimm_143/blob/main/Class11/week11hw.pdf)
 
